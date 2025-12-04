@@ -2,34 +2,20 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('StockEntries', {
+    await queryInterface.createTable('Notifications', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      inventoryId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        references: {
-          model: 'Inventories',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
-      receivedQuantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      location: {
+      message: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      note: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      read: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -45,6 +31,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('StockEntries');
+    await queryInterface.dropTable('Notifications');
   }
 };

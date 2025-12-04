@@ -12,7 +12,7 @@ export class ProductService {
 
   async create(data: Partial<Product>): Promise<Product> {
     return this.productModel.create(data as Product);
-  }w
+  }
 
   async findAll(): Promise<Product[]> {
     return this.productModel.findAll();

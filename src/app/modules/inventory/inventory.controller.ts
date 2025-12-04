@@ -34,15 +34,33 @@ export class InventoryController {
     return this.inventoryService.findByProduct(productid);
   }
 
-  @Patch(':productId/:location')
-  update(
+  @Patch(':productId/:location/sum')
+  sum(
     @Param('productId') productId: string,
     @Param('location') location: string,
     @Body() updateInventoryDto: UpdateInventoryDto,
   ) {
-    return this.inventoryService.update(productId, location, updateInventoryDto);
+    return this.inventoryService.update(
+      productId,
+      location,
+      'sum',
+      updateInventoryDto,
+    );
   }
 
+  @Patch(':productId/:location/sub')
+  sub(
+    @Param('productId') productId: string,
+    @Param('location') location: string,
+    @Body() updateInventoryDto: UpdateInventoryDto,
+  ) {
+    return this.inventoryService.update(
+      productId,
+      location,
+      'sub',
+      updateInventoryDto,
+    );
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

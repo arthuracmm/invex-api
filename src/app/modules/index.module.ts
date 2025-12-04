@@ -3,7 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ProductModule } from './product/product.module';
 import { InventoryModule } from './inventory/inventory.module';
-import { StockEntryModule } from './stock-entry/stock-entry.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
     imports: [
@@ -11,7 +11,7 @@ import { StockEntryModule } from './stock-entry/stock-entry.module';
         UsersModule,
         ProductModule,
         InventoryModule,
-        StockEntryModule
+        NotificationsModule,
     ],
     exports: [
         AuthModule

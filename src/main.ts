@@ -42,10 +42,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: `${gatewayClient}`,
+    origin: true, 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
 
   await app.startAllMicroservices()
   await app.listen(port);

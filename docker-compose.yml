@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT}:5000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: "${NODE_ENV}"
+      DATABASE_URL: "postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_DATABASE}"
+    volumes:
+      - ./migrations:/app/migrations
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    platform: linux/x86_64
+    image: postgres:13
+    environment:
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_DATABASE}"
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db_data:

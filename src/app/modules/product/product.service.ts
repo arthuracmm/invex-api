@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './entities/product.entity';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProductService {
@@ -11,11 +12,24 @@ export class ProductService {
   ) { }
 
   async create(data: Partial<Product>): Promise<Product> {
+    const existingProduct = await this.productModel.findOne({
+      where: {
+        [Op.or]: [
+          { shortName: data.shortName },
+          { fullName: data.fullName }
+        ]
+      }
+    });
+
+    if (existingProduct) {
+      throw new ConflictException('Product already exists');
+    }
+
     return this.productModel.create(data as Product);
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.findAll();
+    return this.productModel.findAll({ include: [{ all: true }] });
   }
 
   async findOne(id: string): Promise<Product> {

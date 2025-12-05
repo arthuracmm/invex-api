@@ -10,7 +10,7 @@ export const getSequelizeConfig = (configService: ConfigService): SequelizeModul
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         autoLoadModels: true,
-        synchronize: false,
+        synchronize: true,
         dialectOptions: {
             useUTC: false,
             timezone: 'America/Sao_Paulo',

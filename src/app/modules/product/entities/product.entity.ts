@@ -1,5 +1,6 @@
-import { Table, Column, Model, PrimaryKey, Default, Index, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, Default, Index, ForeignKey, BelongsTo, HasMany, Unique } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { Inventory } from '../../inventory/entities/inventory.entity';
 
 @Table
 export class Product extends Model<Product> {
@@ -11,12 +12,14 @@ export class Product extends Model<Product> {
     })
     declare id: string;
 
+    @Unique
     @Column({
         type: DataTypes.STRING,
         allowNull: false,
     })
     declare shortName: string;
 
+    @Unique
     @Column({
         type: DataTypes.STRING,
         allowNull: false,
@@ -34,4 +37,7 @@ export class Product extends Model<Product> {
         allowNull: false,
     })
     declare quantMin: number;
+
+    @HasMany(() => Inventory)
+    declare inventories: Inventory[];
 }

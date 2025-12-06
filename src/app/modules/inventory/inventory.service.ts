@@ -11,7 +11,9 @@ export class InventoryService {
   ) { }
 
   async create(data: Partial<Inventory>): Promise<Inventory> {
+    
     return this.inventoryModel.create(data as Inventory);
+    
   }
 
   async findAll(): Promise<Inventory[]> {

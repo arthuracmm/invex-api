@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './entities/product.entity';
 import { Op } from 'sequelize';
+import { Inventory } from '../inventory/entities/inventory.entity';
 
 @Injectable()
 export class ProductService {
@@ -29,7 +30,7 @@ export class ProductService {
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.findAll({ include: [{ all: true }] });
+    return this.productModel.findAll({ include: [Inventory] });
   }
 
   async findOne(id: string): Promise<Product> {

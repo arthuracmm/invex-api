@@ -10,5 +10,6 @@ import { Product } from '../product/entities/product.entity';
   imports: [SequelizeModule.forFeature([Inventory, Product]), ConfigModule],
   controllers: [InventoryController],
   providers: [InventoryService],
+  exports:[InventoryService]
 })
 export class InventoryModule {}

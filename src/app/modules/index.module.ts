@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { ProductModule } from './product/product.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { MovimentationsModule } from './movimentations/movimentations.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { NotificationsModule } from './notifications/notifications.module';
         ProductModule,
         InventoryModule,
         NotificationsModule,
+        MovimentationsModule,
     ],
     exports: [
         AuthModule

@@ -29,9 +29,9 @@ export class InventoryController {
     return this.inventoryService.findQuantity(productId, location);
   }
 
-  @Get('product/:productId')
-  findByProduct(@Param('productId') productid: string) {
-    return this.inventoryService.findByProduct(productid);
+  @Get('product/:productId/:location')
+  findByProductAndLocation(@Param('productId') productid: string, @Param('location') location: string) {
+    return this.inventoryService.findByProductAndLocation(productid, location);
   }
 
   @Patch(':productId/:location/sum')

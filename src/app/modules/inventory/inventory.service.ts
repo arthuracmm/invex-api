@@ -11,9 +11,7 @@ export class InventoryService {
   ) { }
 
   async create(data: Partial<Inventory>): Promise<Inventory> {
-    
     return this.inventoryModel.create(data as Inventory);
-    
   }
 
   async findAll(): Promise<Inventory[]> {
@@ -36,10 +34,11 @@ export class InventoryService {
     return inventory;
   }
 
-  async findByProduct(productId: string): Promise<Inventory[]> {
+  async findByProductAndLocation(productId: string, location: string): Promise<Inventory[]> {
     return this.inventoryModel.findAll({
       where: {
-        productId: productId
+        productId: productId,
+        location: location
       },
       attributes: { exclude: ['productId', 'createdAt', 'updatedAt'] },
       include: [
@@ -85,10 +84,11 @@ export class InventoryService {
     }
 
     await inventory.update(data);
+    if (inventory.quantity === 0) {
+      this.remove(inventory.id)
+    }
     return inventory;
   }
-
-
 
   async findQuantity(productId: string, location: string): Promise<Inventory> {
     const inventory = await this.inventoryModel.findOne({

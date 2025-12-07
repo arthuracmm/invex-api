@@ -34,8 +34,14 @@ export class MovimentationsController {
   }
 
 
-  // @Get('output')
-  // findAllByOutput() {
-  //   return this.movimentationsService.findAllByType('output');
-  // }
+  @Get('output')
+  findAllOutput(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10
+  ) {
+    return this.movimentationsService.findAllByType('entry', {
+      page: Number(page),
+      pageSize: Number(pageSize),
+    });
+  }
 }

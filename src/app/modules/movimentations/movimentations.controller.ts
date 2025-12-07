@@ -39,7 +39,7 @@ export class MovimentationsController {
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 10
   ) {
-    return this.movimentationsService.findAllByType('entry', {
+    return this.movimentationsService.findAllByType('output', {
       page: Number(page),
       pageSize: Number(pageSize),
     });

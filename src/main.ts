@@ -20,7 +20,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 8000;
-  const gatewayClient = configService.get<String>('GATEWAY_CLIENT');
 
   const config = new DocumentBuilder()
     .setTitle('Invex API')
@@ -42,14 +41,13 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: true, 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: true,
     credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });
 
-
   await app.startAllMicroservices()
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   process.on('uncaughtException', (err) => {
     console.error('Erro não tratado:', err);

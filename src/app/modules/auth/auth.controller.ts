@@ -24,8 +24,10 @@ export class AuthController {
 
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
-      sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
+      domain: '.hugozera.space',
+      sameSite: 'none',
+      secure: true,
     });
 
     return { access_token: token.access_token };

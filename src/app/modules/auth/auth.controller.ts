@@ -22,13 +22,16 @@ export class AuthController {
 
     const token = await this.authService.login(user);
 
+    const isProd = process.env.NODE_ENV === 'production';
+
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      domain: '.hugozera.space',
-      sameSite: 'none',
-      secure: true,
+      secure: isProd,                         // HTTPS somente em produção
+      sameSite: isProd ? 'none' : 'lax',      // 'none' só no HTTPS
+      domain: isProd ? '.hugozera.space' : undefined, // não usar domain no localhost
     });
+
 
     return { access_token: token.access_token };
   }

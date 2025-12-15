@@ -71,8 +71,8 @@ export class InventoryService {
 
       const newQuantity =
         type === 'sum'
-          ? current.quantity + data.quantity
-          : current.quantity - data.quantity;
+          ? Number(current.quantity) + Number(data.quantity)
+          : Number(current.quantity) - Number(data.quantity);
 
       if (newQuantity < 0) {
         throw new BadRequestException(

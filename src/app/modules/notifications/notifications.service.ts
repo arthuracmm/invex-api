@@ -12,8 +12,35 @@ export class NotificationsService {
     return this.notificationsModel.create(data as Notification);
   }
 
-  async findAll(): Promise<Notification[]> {
-    return this.notificationsModel.findAll();
+  async findAll(
+    pagination: {
+      page: number;
+      pageSize: number;
+    }
+  ): Promise<{ data: Notification[]; total: number; page: number; pageSize: number }> {
+    const offset = (pagination.page - 1) * pagination.pageSize;
+    const limit = pagination.pageSize;
+
+    const { rows, count } = await this.notificationsModel.findAndCountAll({
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
+    });
+
+    return {
+      total: count,
+      page: pagination.page,
+      pageSize: pagination.pageSize,
+      data: rows,
+    };
+  }
+
+  async hasNotification(): Promise<boolean> {
+    const notifications = await this.notificationsModel.findAll({
+      where: { read: false }
+    });
+
+    return notifications.length > 0;
   }
 
   async findOne(id: string): Promise<Notification> {
@@ -29,8 +56,4 @@ export class NotificationsService {
     return notification.update(data);
   }
 
-  async remove(id: string): Promise<void> {
-    const notification = await this.findOne(id);
-    await notification.destroy();
-  }
 }

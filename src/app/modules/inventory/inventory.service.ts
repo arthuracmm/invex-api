@@ -3,11 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Inventory } from './entities/inventory.entity';
 import { Product } from '../product/entities/product.entity';
 import { Op } from 'sequelize';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class InventoryService {
   constructor(
     @InjectModel(Inventory) private inventoryModel: typeof Inventory,
+    @InjectModel(Product) private productModel: typeof Product,
+    private notificationsService: NotificationsService,
   ) { }
 
   async create(data: Partial<Inventory>): Promise<Inventory> {
@@ -78,6 +81,17 @@ export class InventoryService {
         throw new BadRequestException(
           `Quantity cannot be negative (attempted: ${newQuantity})`,
         );
+      }
+
+      if (type === 'sub') {
+        const product = await this.productModel.findByPk(productId);
+        if (product && newQuantity < product.quantMin) {
+          const message = `${product.shortName} - ${product.fullName} está com pouca quantidade`;
+          await this.notificationsService.create({
+            message: message,
+            read: false,
+          });
+        }
       }
 
       data.quantity = newQuantity;

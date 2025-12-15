@@ -6,8 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { Notification } from './entities/notification.entity';
 
 @Module({
-   imports: [SequelizeModule.forFeature([Notification]), ConfigModule],
+  imports: [SequelizeModule.forFeature([Notification]), ConfigModule],
   controllers: [NotificationsController],
   providers: [NotificationsService],
+  exports: [NotificationsService]
 })
-export class NotificationsModule {}
+export class NotificationsModule { }

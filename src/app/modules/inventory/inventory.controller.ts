@@ -34,6 +34,11 @@ export class InventoryController {
     return this.inventoryService.findByProductAndLocation(productid, location);
   }
 
+  @Get('dashboard')
+  dashboard() {
+    return this.inventoryService.dashboard();
+  }
+
   @Patch(':productId/:location/sum')
   sum(
     @Param('productId') productId: string,

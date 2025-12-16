@@ -2,13 +2,15 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/sequelize';
 import { Inventory } from './entities/inventory.entity';
 import { Product } from '../product/entities/product.entity';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { NotificationsService } from '../notifications/notifications.service';
+import { Movimentation } from '../movimentations/entities/movimentation.entity';
 
 @Injectable()
 export class InventoryService {
   constructor(
     @InjectModel(Inventory) private inventoryModel: typeof Inventory,
+    @InjectModel(Movimentation) private movimentationModel: typeof Movimentation,
     @InjectModel(Product) private productModel: typeof Product,
     private notificationsService: NotificationsService,
   ) { }
@@ -86,7 +88,7 @@ export class InventoryService {
       if (type === 'sub') {
         const product = await this.productModel.findByPk(productId);
         if (product && newQuantity < product.quantMin) {
-          const message = `${product.shortName} - ${product.fullName} está com pouca quantidade`;
+          const message = `${product.shortName}-${product.fullName} está com pouca quantidade`;
           await this.notificationsService.create({
             message: message,
             read: false,
@@ -120,4 +122,80 @@ export class InventoryService {
     const inventory = await this.findOne(id);
     await inventory.destroy();
   }
+
+  async dashboard(): Promise<{
+    smaller: Inventory[];
+    greater: Inventory[];
+    totalQuantity: number;
+    topEntry: any[];
+    topOutput: any[];
+  }> {
+    const productTotals = await this.inventoryModel.findAll({
+      attributes: [
+        'productId',
+        [Sequelize.fn('SUM', Sequelize.col('quantity')), 'totalQuantity'],
+      ],
+      group: ['productId', 'product.id'],
+      include: [
+        {
+          model: Product,
+          attributes: ['id', 'shortName', 'fullName'],
+        },
+      ],
+      raw: true,
+      nest: true,
+    });
+
+    const sortedTotals = productTotals.sort(
+      (a: any, b: any) => a.totalQuantity - b.totalQuantity
+    );
+
+    const smaller = sortedTotals.slice(0, 5);
+    const greater = sortedTotals.slice(-5).reverse();
+
+    const totalQuantity = await this.inventoryModel.sum('quantity');
+
+    const topEntry = await this.movimentationModel.findAll({
+      attributes: [
+        'productId',
+        [Sequelize.fn('SUM', Sequelize.col('quantity')), 'total'],
+      ],
+      where: { type: 'entry' },
+      group: ['productId', 'product.id'],
+      order: [[Sequelize.literal('"total"'), 'DESC']],
+      limit: 5,
+      include: [
+        {
+          model: Product,
+          attributes: ['id', 'shortName', 'fullName'],
+        },
+      ],
+    });
+
+    const topOutput = await this.movimentationModel.findAll({
+      attributes: [
+        'productId',
+        [Sequelize.fn('SUM', Sequelize.col('quantity')), 'total'],
+      ],
+      where: { type: 'output' },
+      group: ['productId', 'product.id'],
+      order: [[Sequelize.literal('"total"'), 'DESC']],
+      limit: 5,
+      include: [
+        {
+          model: Product,
+          attributes: ['id', 'shortName', 'fullName'],
+        },
+      ],
+    });
+
+    return {
+      totalQuantity: totalQuantity ?? 0,
+      smaller,
+      greater,
+      topEntry,
+      topOutput,
+    };
+  }
+
 }

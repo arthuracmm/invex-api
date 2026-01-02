@@ -18,6 +18,7 @@ export class AuthController {
   async login(
     @Body() body: LoginUserAuthDto,
     @Res({ passthrough: true }) res: Response,
+    @Req() req: any,
   ) {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) {
@@ -28,12 +29,22 @@ export class AuthController {
 
     const isProd = process.env.NODE_ENV === 'production';
 
+    let cookieDomain = undefined;
+    if (isProd) {
+      const origin = req.headers.origin || '';
+      if (origin.includes('resiarteakin.com.br')) {
+        cookieDomain = '.resiarteakin.com.br';
+      } else {
+        cookieDomain = '.hugozera.space';
+      }
+    }
+
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       secure: isProd,                         // HTTPS somente em produção
       sameSite: isProd ? 'none' : 'lax',      // 'none' só no HTTPS
-      domain: isProd ? '.hugozera.space' : undefined, // não usar domain no localhost
+      domain: cookieDomain, // definir dinâmicamente com base na origem
     });
 
 

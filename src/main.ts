@@ -41,7 +41,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: ['https://hugozera.space', 'https://www.hugozera.space', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://hugozera.space', 'https://www.hugozera.space', 'http://localhost:3000', 'http://localhost:3001', 'https://resiarteakin.com.br', 'https://www.resiarteakin.com.br', 'https://api.resiarteakin.com.br'],
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });

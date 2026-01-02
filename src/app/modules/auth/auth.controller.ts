@@ -29,7 +29,7 @@ export class AuthController {
 
     const isProd = process.env.NODE_ENV === 'production';
 
-    let cookieDomain = undefined;
+    let cookieDomain: string | undefined = undefined;
     if (isProd) {
       const origin = req.headers.origin || '';
       if (origin.includes('resiarteakin.com.br')) {
@@ -52,10 +52,10 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() body: any, @Res({ passthrough: true }) res: Response) {
+  async register(@Body() body: any, @Res({ passthrough: true }) res: Response, @Req() req: any) {
     const user = await this.usersService.createUser(body);
     // const token = await this.authService.login(user); // Auto-login after register
-    return this.login({ email: body.email, password: body.password } as any, res); // Re-use login logic for cookie set
+    return this.login({ email: body.email, password: body.password } as any, res, req); // Re-use login logic for cookie set
   }
 
   @ApiBearerAuth('access-token')

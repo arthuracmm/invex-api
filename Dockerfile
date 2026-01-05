@@ -1,16 +1,23 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 
 RUN npm run build
+RUN npm prune --production
 
-RUN npm install -g sequelize-cli
+FROM node:20-alpine
 
-EXPOSE 3000
+WORKDIR /app
 
-CMD ["node", "dist/main.js"]
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+EXPOSE 8000
+
+CMD ["node", "dist/main"]

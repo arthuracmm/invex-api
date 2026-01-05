@@ -15,14 +15,14 @@ export class Movimentation extends Model<Movimentation> {
 
     @ForeignKey(() => User)
     @Column({
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: false,
     })
     declare userId: string;
 
     @ForeignKey(() => Product)
     @Column({
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: false,
     })
     declare productId: string;

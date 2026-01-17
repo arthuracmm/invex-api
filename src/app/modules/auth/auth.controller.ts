@@ -32,8 +32,8 @@ export class AuthController {
     let cookieDomain: string | undefined = undefined;
     if (isProd) {
       const origin = req.headers.origin || '';
-      if (origin.includes('resiarteakin.com.br')) {
-        cookieDomain = '.resiarteakin.com.br';
+      if (origin.includes('hugozera.space')) {
+        cookieDomain = '.hugozera.space';
       } else {
         cookieDomain = '.hugozera.space';
       }
@@ -53,6 +53,11 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: any, @Res({ passthrough: true }) res: Response, @Req() req: any) {
+    const secretKey = process.env.REGISTRATION_KEY || 'invex-secret-key'; // Fallback default or strictly Env
+    if (body.secretKey !== secretKey) {
+      throw new UnauthorizedException('Chave de convite inválida.');
+    }
+
     const user = await this.usersService.createUser(body);
     // const token = await this.authService.login(user); // Auto-login after register
     return this.login({ email: body.email, password: body.password } as any, res, req); // Re-use login logic for cookie set

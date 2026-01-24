@@ -30,4 +30,16 @@ export class User extends Model<User> {
         allowNull: false,
     })
     declare password: string;
+
+    @Column({
+        type: DataTypes.STRING,
+        allowNull: false,
+    })
+    declare role: string;
+
+    @Column({
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    })
+    declare isActive: boolean;
 }

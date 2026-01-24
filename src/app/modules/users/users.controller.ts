@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Patch } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersSwagger } from './anottations/users.anottation';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -21,6 +22,8 @@ export class UsersController {
     return userWithoutPassword;
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Get()
   @UsersSwagger.GetAllUsers.ApiOperation
   @UsersSwagger.GetAllUsers.ApiResponse200
@@ -30,6 +33,8 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @UsersSwagger.GetById.ApiOperation
   @UsersSwagger.GetById.ApiResponse200
@@ -39,7 +44,9 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Put(':id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
   @UsersSwagger.PutById.ApiOperation
   @UsersSwagger.PutById.ApiResponse401
   @UsersSwagger.PutById.ApiResponse500
@@ -47,6 +54,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @UsersSwagger.DeleteUser.ApiOperation
   @UsersSwagger.DeleteUser.ApiResponse200

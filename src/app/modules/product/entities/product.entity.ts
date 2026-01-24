@@ -12,14 +12,12 @@ export class Product extends Model<Product> {
     })
     declare id: string;
 
-    @Unique
     @Column({
         type: DataTypes.STRING,
         allowNull: false,
     })
     declare shortName: string;
 
-    @Unique
     @Column({
         type: DataTypes.STRING,
         allowNull: false,

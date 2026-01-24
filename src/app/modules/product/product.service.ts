@@ -29,9 +29,32 @@ export class ProductService {
     return this.productModel.create(data as Product);
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel.findAll({ include: [Inventory] });
+  async findAll(
+    page: number,
+    limit : number
+  ): Promise<{
+    page: number;
+    total: number;
+    limit: number
+    data: Product[];
+  }> {
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await this.productModel.findAndCountAll({
+      include: [Inventory],
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
+    });
+
+    return {
+      total: count,
+      page,
+      limit,
+      data: rows,
+    };
   }
+
 
   async findOne(id: string): Promise<Product> {
     const product = await this.productModel.findByPk(id, {
